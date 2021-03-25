@@ -18,13 +18,32 @@ jobs:
       matrix:
         node-version: [10.x, 12.x, 14.x, 15.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-    steps:
+        
+        
+steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm run build --if-present
     - run: npm install
-    - run: npm rum cypress:rum:dash
+
+
+   # action criada especialmente para o Cypress
+    - name: Cypress run 
+    - uses: cypress-io/github-action@v2.8.2
+    - with:
+	      record: true
+	      group: 'Semana Agilizei' 
+        env:
+      
+    # pass the Dashboard record key as an environment variable
+	CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+   
+    # upload dos videos gerados
+    - name: Upload videos
+    - uses: actions/upload-artifact@2.2.0
+    - if: always ()
+    with:
+     name: videos
+     path: cypress/videos
